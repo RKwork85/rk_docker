@@ -75,6 +75,9 @@ docker 技术的一系列使用
 docker compose up -d
 
 
+## 已知bug
+
+数据集文件下载后没有内容：undo
 
 
 ## Q&A
