@@ -1,0 +1,63 @@
+name: dsmuzi
+services:
+  dsmysql:
+    container_name: dsmysql
+    image: rkwork885/dsmysql:latest
+    ports: 
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_USER=rkwork
+      - MYSQL_PASSWORD=rkwork
+    volumes:
+      - dsmysql:/var/lib/mysql
+      - /home/rkwork/work_place/project/docker_volume/ds_rkwork/dsmysql:/etc/mysql/conf.d
+    restart: always
+    networks:
+      - rknet
+  
+  dsflask:
+    container_name: dsflask
+    image: rkwork885/dsflask:1.0
+    ports: 
+      - "5000:5000"
+    environment: 
+      - HOSTNAME=dsmysql
+      - PORT=3306
+      - DATABASE=datasets
+      - USERNAME=rkwork
+      - PASSWORD=rkwork
+    
+    volumes:
+    - dsflask:/usr/src/app
+
+    restart: always
+    networks:
+      - rknet
+    depends_on:
+      - dsmysql
+
+  dsnginx:
+    container_name: dsnginx
+    image: rkwork885/dsnginx:latest
+    ports: 
+      - "88:80"
+    
+    volumes:
+    - dsnginx:/etc/nginx
+
+    restart: always
+    networks:
+      - rknet
+    depends_on:
+      - dsmysql
+      - dsflask
+
+volumes:
+  dsmysql:
+  dsflask:
+  dsnginx:
+
+networks:
+  rknet:
+  
